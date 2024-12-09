@@ -1,0 +1,19 @@
+using UnityEngine;
+
+public class WeatherManager : MonoBehaviour
+{
+    public enum WeatherType { 晴れ, 雨, 雪, 風 }
+
+    public WeatherType currentWeather;
+
+    private void Start()
+    {
+        RandomizeWeather();
+    }
+
+    private void RandomizeWeather()
+    {
+        currentWeather = (WeatherType)Random.Range(0, 4); // 0-3 のランダムな天気
+        Debug.Log("今日の天気: " + currentWeather.ToString());
+    }
+}

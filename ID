@@ -1,2 +1,17 @@
-aaa
-bbb
+using UnityEngine;
+
+public class AvatarCustomization : MonoBehaviour
+{
+    public PlayerData playerData;
+
+    public void CustomizeAvatar()
+    {
+        // 仮のユーザ入力 (ゲーム内UIで選択させる想定)
+        string selectedExpression = "表情2";
+        string selectedHairstyle = "髪型3";
+        string selectedClothingColor = "青";
+
+        playerData.CustomizeAvatar(selectedExpression, selectedHairstyle, selectedClothingColor);
+    }
+}
+

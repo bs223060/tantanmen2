@@ -1,0 +1,26 @@
+using UnityEngine;
+
+public class GameManager : MonoBehaviour
+{
+    public int currentDay = 1;
+    private PlayerData playerData;
+    private GameResources gameResources;
+
+    private void Start()
+    {
+        playerData = FindObjectOfType<PlayerData>();
+        gameResources = FindObjectOfType<GameResources>();
+    }
+
+    public void AdvanceDay(int daysToAdvance = 1)
+    {
+        currentDay += daysToAdvance;
+        Debug.Log("日付が進みました。現在の日付: " + currentDay);
+
+        // ゲーム進行イベントの管理
+        if (currentDay == 7) Debug.Log("酪農が解放されました！ (牛, 豚, 鶏...)");
+        if (currentDay == 9) Debug.Log("素潜りが解放されました！ (魚(小), 魚(中), 魚(大))");
+        if (currentDay == 14) Debug.Log("輸出が解放されました！");
+        if (currentDay == 21) Debug.Log("住民が島に移住できるようになりました！");
+    }
+}

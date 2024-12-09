@@ -1,0 +1,11 @@
+using UnityEngine;
+
+public class SoundManager : MonoBehaviour
+{
+    public AudioSource audioSource;
+
+    public void PlaySound(AudioClip clip)
+    {
+        audioSource.PlayOneShot(clip);
+    }
+}

@@ -1,0 +1,52 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+public class GameUIManager : MonoBehaviour
+{
+    // UI要素
+    public Text timeText;
+    public Text healthText;
+    public Text statusText;
+    public Button mapButton;
+    public Button itemButton;
+
+    private float timeOfDay = 0f; // ゲーム内時間
+    private int health = 100;    // プレイヤーの体力
+    private string healthStatus = "良好"; // 健康状態
+
+    void Start()
+    {
+        // ボタンに機能を割り当て
+        mapButton.onClick.AddListener(OpenMap);
+        itemButton.onClick.AddListener(OpenInventory);
+    }
+
+    void Update()
+    {
+        // ゲーム内時間を更新
+        UpdateTime();
+
+        // 健康状態を表示
+        healthText.text = $"体力: {health}%";
+        statusText.text = $"健康状態: {healthStatus}";
+    }
+
+    void UpdateTime()
+    {
+        timeOfDay += Time.deltaTime * 0.1f; // 時間をゆっくり進める
+        if (timeOfDay >= 24f) timeOfDay = 0f; // 1日終了
+        timeText.text = $"時刻: {Mathf.FloorToInt(timeOfDay):00}:00";
+    }
+
+    void OpenMap()
+    {
+        Debug.Log("マップを開きます。");
+        // マップ表示の実装をここに追加
+    }
+
+    void OpenInventory()
+    {
+        Debug.Log("アイテムバッグを開きます。");
+        // アイテムバッグ表示の実装をここに追加
+    }
+}

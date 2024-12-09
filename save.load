@@ -1,0 +1,59 @@
+using UnityEngine;
+using System.IO;
+
+[System.Serializable]
+public class GameData
+{
+    public int day;
+    public int health;
+    public string weather;
+    public List<string> inventory;
+    public AvatarSettings avatarSettings;
+}
+
+public class SaveLoadManager : MonoBehaviour
+{
+    private string saveFilePath;
+
+    private void Start()
+    {
+        saveFilePath = Application.persistentDataPath + "/savefile.json";
+    }
+
+    public void SaveGame(GameManager gameManager, PlayerData player, WeatherManager weatherManager)
+    {
+        GameData data = new GameData
+        {
+            day = gameManager.currentDay,
+            health = player.health,
+            weather = weatherManager.currentWeather.ToString(),
+            inventory = player.inventory,
+            avatarSettings = player.avatarSettings
+        };
+
+        string json = JsonUtility.ToJson(data);
+        File.WriteAllText(saveFilePath, json);
+        Debug.Log("ゲームをセーブしました。");
+    }
+
+    public void LoadGame(GameManager gameManager, PlayerData player, WeatherManager weatherManager)
+    {
+        if (File.Exists(saveFilePath))
+        {
+            string json = File.ReadAllText(saveFilePath);
+            GameData data = JsonUtility.FromJson<GameData>(json);
+
+            gameManager.currentDay = data.day;
+            player.health = data.health;
+            weatherManager.currentWeather = (WeatherManager.WeatherType)System.Enum.Parse(typeof(WeatherManager.WeatherType), data.weather);
+            player.inventory = data.inventory;
+            player.avatarSettings = data.avatarSettings;
+
+            Debug.Log("ゲームをロードしました。");
+        }
+        else
+        {
+            Debug.Log("セーブファイルが存在しません。");
+        }
+    }
+}

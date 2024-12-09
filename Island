@@ -1,2 +1,31 @@
-aaaa
-bbbb
+using UnityEngine;
+
+public class Island : MonoBehaviour
+{
+    public string weather = "晴れ";
+    public float timeOfDay = 0f; // 1日は24時間とする
+    public float dayLength = 24f; // 1日=24分
+
+    void Update()
+    {
+        UpdateTime();
+    }
+
+    void UpdateTime()
+    {
+        timeOfDay += Time.deltaTime * (24f / dayLength);
+        if (timeOfDay >= 24f)
+        {
+            timeOfDay = 0f;
+            Debug.Log("新しい日が始まりました！");
+            UpdateWeather();
+        }
+    }
+
+    void UpdateWeather()
+    {
+        string[] weatherOptions = { "晴れ", "雨", "曇り" };
+        weather = weatherOptions[Random.Range(0, weatherOptions.Length)];
+        Debug.Log("今日の天気は: " + weather);
+    }
+}

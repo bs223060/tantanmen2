@@ -1,3 +1,49 @@
-aaaaa
-aiuhca
-jknhj
+using UnityEngine;
+using System.Collections.Generic;
+
+public class PlayerData : MonoBehaviour
+{
+    public string playerName;
+    public int health = 100;
+    public List<string> inventory = new List<string>();
+    public AvatarSettings avatarSettings;
+
+    private void Start()
+    {
+        InitializePlayer();
+    }
+
+    private void InitializePlayer()
+    {
+        Debug.Log("ゲーム開始: 初期設定をロードしています...");
+
+        // 初期インベントリ (1週間分のトウモロコシを持たせる)
+        for (int i = 0; i < 7; i++) inventory.Add("トウモロコシ");
+
+        Debug.Log("初期アイテム: トウモロコシx7をインベントリに追加しました。");
+
+        // アバターの初期設定
+        avatarSettings = new AvatarSettings
+        {
+            expression = "表情1",
+            hairstyle = "髪型1",
+            clothingColor = "赤"
+        };
+    }
+
+    public void CustomizeAvatar(string expression, string hairstyle, string clothingColor)
+    {
+        avatarSettings.expression = expression;
+        avatarSettings.hairstyle = hairstyle;
+        avatarSettings.clothingColor = clothingColor;
+        Debug.Log("アバター設定完了: 表情 - " + expression + ", 髪型 - " + hairstyle + ", 服の色 - " + clothingColor);
+    }
+}
+
+[System.Serializable]
+public class AvatarSettings
+{
+    public string expression;
+    public string hairstyle;
+    public string clothingColor;
+}
