@@ -1,52 +1,119 @@
-using UnityEngine;
-using UnityEngine.UI;
+import pygame
+import sys
 
-public class GameUIManager : MonoBehaviour
-{
-    // UI要素
-    public Text timeText;
-    public Text healthText;
-    public Text statusText;
-    public Button mapButton;
-    public Button itemButton;
+# 初期化
+pygame.init()
 
-    private float timeOfDay = 0f; // ゲーム内時間
-    private int health = 100;    // プレイヤーの体力
-    private string healthStatus = "良好"; // 健康状態
+# 画面サイズと設定
+SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("ゲームUIの外枠")
 
-    void Start()
-    {
-        // ボタンに機能を割り当て
-        mapButton.onClick.AddListener(OpenMap);
-        itemButton.onClick.AddListener(OpenInventory);
-    }
+# 色の定義
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (200, 200, 200)
+GREEN = (0, 255, 0)
 
-    void Update()
-    {
-        // ゲーム内時間を更新
-        UpdateTime();
+# フォントの設定
+font = pygame.font.SysFont(None, 36)
 
-        // 健康状態を表示
-        healthText.text = $"体力: {health}%";
-        statusText.text = $"健康状態: {healthStatus}";
-    }
+# UIクラス
+class GameUI:
+    def __init__(self, screen):
+        self.screen = screen
+        self.player_pos = [SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2]
+        self.player_size = 20
+        self.health = 150  # 現在の体力
+        self.max_health = 200  # 最大体力
+        self.health_status = "良好"  # 健康状態
+        self.time = "12:00"  # 時計の表示
 
-    void UpdateTime()
-    {
-        timeOfDay += Time.deltaTime * 0.1f; // 時間をゆっくり進める
-        if (timeOfDay >= 24f) timeOfDay = 0f; // 1日終了
-        timeText.text = $"時刻: {Mathf.FloorToInt(timeOfDay):00}:00";
-    }
+    def draw_health_bar(self):
+        """体力バーを描画"""
+        pygame.draw.rect(self.screen, GRAY, (20, 20, 200, 20))  # 背景バー
+        pygame.draw.rect(self.screen, GREEN, (20, 20, 200 * (self.health / self.max_health), 20))  # 現在の体力バー
+        health_text = font.render(f"体力: {self.health}/{self.max_health}", True, BLACK)
+        self.screen.blit(health_text, (20, 50))
 
-    void OpenMap()
-    {
-        Debug.Log("マップを開きます。");
-        // マップ表示の実装をここに追加
-    }
+    def draw_health_status(self):
+        """健康状態を描画"""
+        health_status_text = font.render(f"健康状態: {self.health_status}", True, BLACK)
+        self.screen.blit(health_status_text, (20, 80))
 
-    void OpenInventory()
-    {
-        Debug.Log("アイテムバッグを開きます。");
-        // アイテムバッグ表示の実装をここに追加
-    }
-}
+    def draw_clock(self):
+        """時計を描画"""
+        pygame.draw.circle(self.screen, BLACK, (SCREEN_WIDTH - 60, 40), 30, 2)
+        time_text = font.render(self.time, True, BLACK)
+        self.screen.blit(time_text, (SCREEN_WIDTH - 90, 30))
+
+    def draw_map_button(self):
+        """マップボタンを描画"""
+        pygame.draw.rect(self.screen, GRAY, (SCREEN_WIDTH - 120, 80, 100, 40))
+        map_text = font.render("マップ", True, BLACK)
+        self.screen.blit(map_text, (SCREEN_WIDTH - 110, 90))
+
+    def draw_item_button(self):
+        """アイテムボタンを描画"""
+        pygame.draw.rect(self.screen, GRAY, (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 80, 100, 40))
+        item_text = font.render("アイテム", True, BLACK)
+        self.screen.blit(item_text, (SCREEN_WIDTH - 110, SCREEN_HEIGHT - 70))
+
+    def draw_player(self):
+        """プレイヤーを描画"""
+        pygame.draw.circle(self.screen, BLACK, self.player_pos, self.player_size)
+        player_text = font.render("ユーザ", True, BLACK)
+        self.screen.blit(player_text, (self.player_pos[0] - 20, self.player_pos[1] + 25))
+
+    def draw_ui(self):
+        """UI全体を描画"""
+        self.draw_health_bar()
+        self.draw_health_status()
+        self.draw_clock()
+        self.draw_map_button()
+        self.draw_item_button()
+        self.draw_player()
+
+    def move_player(self, keys):
+        """プレイヤーを矢印キーで移動"""
+        if keys[pygame.K_UP]:
+            self.player_pos[1] -= 5
+        if keys[pygame.K_DOWN]:
+            self.player_pos[1] += 5
+        if keys[pygame.K_LEFT]:
+            self.player_pos[0] -= 5
+        if keys[pygame.K_RIGHT]:
+            self.player_pos[0] += 5
+
+
+# メイン関数
+def main():
+    clock = pygame.time.Clock()
+    ui = GameUI(screen)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        # キー入力の取得
+        keys = pygame.key.get_pressed()
+        ui.move_player(keys)
+
+        # 背景の描画
+        screen.fill(WHITE)
+
+        # UIの描画
+        ui.draw_ui()
+
+        # 画面更新
+        pygame.display.flip()
+
+        # FPS設定
+        clock.tick(30)
+
+# 実行
+if __name__ == "__main__":
+    main()
+
